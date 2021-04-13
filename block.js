@@ -10,6 +10,14 @@ class Block {
     static genesis() {
         return new this(GENESIS_DATA);
     }
+
+    static mineData({ lastBlock, data }) {
+        return new this({
+            timestamp: Date.now(),
+            lastHash: lastBlock.hash,
+            data,
+        })
+    }
 }
 
 module.exports = Block;
