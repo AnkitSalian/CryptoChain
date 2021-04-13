@@ -1,6 +1,6 @@
 const GENESIS_DATA = {
     timestamp: 1,
-    lasthash: '------',
+    lastHash: '------',
     hash: 'hash-one',
     data: []
 };
