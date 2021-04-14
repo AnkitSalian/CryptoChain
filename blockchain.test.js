@@ -63,12 +63,28 @@ describe('Blockchain', () => {
     });
 
     describe('replaceChain()', () => {
+        let errorMock, logMock;
+
+        beforeEach(() => {
+            errorMock = jest.fn();
+            logMock = jest.fn();
+
+            global.console.error = errorMock;
+            global.console.log = logMock;
+        })
+
         describe('when the newChain is not longer', () => {
-            it('does not replace chain', () => {
+            beforeEach(() => {
                 newChain.chain[0] = { new: 'chain' };
                 blockchain.replaceChain(newChain.chain);
+            })
 
+            it('does not replace chain', () => {
                 expect(blockchain.chain).toEqual(originalChain);
+            });
+
+            it('logs an error', () => {
+                expect(errorMock).toHaveBeenCalled();
             });
         });
 
@@ -80,20 +96,32 @@ describe('Blockchain', () => {
             });
 
             describe('and the chain is invalid', () => {
-                it('does not replace chain', () => {
+                beforeEach(() => {
                     newChain.chain[2].hash = 'garbage-hash';
 
                     blockchain.replaceChain(newChain.chain);
+                });
 
+                it('does not replace chain', () => {
                     expect(blockchain.chain).toEqual(originalChain);
                 });
+
+                it('logs an error', () => {
+                    expect(errorMock).toHaveBeenCalled();
+                });
+
             });
 
             describe('and  the chain is valid', () => {
-                it('replaces chain', () => {
+                beforeEach(() => {
                     blockchain.replaceChain(newChain.chain);
-
+                })
+                it('replaces chain', () => {
                     expect(blockchain.chain).toEqual(newChain.chain);
+                });
+
+                it('logs an log', () => {
+                    expect(logMock).toHaveBeenCalled();
                 });
             })
         })
