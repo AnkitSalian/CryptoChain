@@ -2,10 +2,13 @@ const Blockchain = require('./blockchain');
 const Block = require('./block');
 
 describe('Blockchain', () => {
-    let blockchain = new Blockchain();
+    let blockchain, newChain, originalChain;
 
     beforeEach(() => {
         blockchain = new Blockchain();
+        newChain = new Blockchain();
+
+        originalChain = blockchain.chain;
     })
 
     it('contains a `chain` Array instance', () => {
@@ -36,7 +39,7 @@ describe('Blockchain', () => {
                 blockchain.addBlock({ data: 'Lion' });
                 blockchain.addBlock({ data: 'Tiger' });
                 blockchain.addBlock({ data: 'Cheetah' });
-            })
+            });
             describe('and lastHash reference has been changed', () => {
                 it('returns false', () => {
                     blockchain.chain[2].lastHash = 'garbage-lastHash';
@@ -54,6 +57,43 @@ describe('Blockchain', () => {
             describe('and the chain does not conatin any invalid Blocks', () => {
                 it('returns true', () => {
                     expect(Blockchain.isValidChain(blockchain.chain)).toBe(true);
+                });
+            });
+        });
+    });
+
+    describe('replaceChain()', () => {
+        describe('when the newChain is not longer', () => {
+            it('does not replace chain', () => {
+                newChain.chain[0] = { new: 'chain' };
+                blockchain.replaceChain(newChain.chain);
+
+                expect(blockchain.chain).toEqual(originalChain);
+            });
+        });
+
+        describe('when the new chain is longer', () => {
+            beforeEach(() => {
+                newChain.addBlock({ data: 'Lion' });
+                newChain.addBlock({ data: 'Tiger' });
+                newChain.addBlock({ data: 'Cheetah' });
+            });
+
+            describe('and the chain is invalid', () => {
+                it('does not replace chain', () => {
+                    newChain.chain[2].hash = 'garbage-hash';
+
+                    blockchain.replaceChain(newChain.chain);
+
+                    expect(blockchain.chain).toEqual(originalChain);
+                });
+            });
+
+            describe('and  the chain is valid', () => {
+                it('replaces chain', () => {
+                    blockchain.replaceChain(newChain.chain);
+
+                    expect(blockchain.chain).toEqual(newChain.chain);
                 });
             })
         })
