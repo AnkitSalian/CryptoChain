@@ -15,13 +15,25 @@ class Block {
     }
 
     static mineData({ lastBlock, data }) {
-        let date = Date.now();
+        let hash, timestamp;
+        // let timestamp = Date.now();
         let lastHash = lastBlock.hash;
+        let { difficulty } = lastBlock;
+        let nonce = 0;
+
+        do {
+            nonce++;
+            timestamp = Date.now();
+            hash = cryptoHash(timestamp, lastHash, data, nonce, difficulty);
+        } while (hash.substring(0, difficulty) !== '0'.repeat(difficulty));
+
         return new this({
-            timestamp: date,
+            timestamp,
             lastHash,
             data,
-            hash: cryptoHash(date, lastHash, data)
+            difficulty,
+            nonce,
+            hash
         })
     }
 }
