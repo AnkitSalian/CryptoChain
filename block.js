@@ -16,7 +16,6 @@ class Block {
 
     static mineData({ lastBlock, data }) {
         let hash, timestamp;
-        // let timestamp = Date.now();
         let lastHash = lastBlock.hash;
         let { difficulty } = lastBlock;
         let nonce = 0;
@@ -24,6 +23,7 @@ class Block {
         do {
             nonce++;
             timestamp = Date.now();
+            difficulty = Block.adjustDifficulty({originalBlock: lastBlock, timestamp});
             hash = cryptoHash(timestamp, lastHash, data, nonce, difficulty);
         } while (hash.substring(0, difficulty) !== '0'.repeat(difficulty));
 
