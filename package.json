@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest --watchAll",
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "odemon index.js",
+    "start-redis": "redis-server --daemonize yes"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +18,8 @@
   },
   "dependencies": {
     "express": "^4.16.3",
-    "hex-to-binary": "^1.0.1"
+    "hex-to-binary": "^1.0.1",
+    "pubnub": "^4.21.6",
+    "redis": "^2.8.0"
   }
 }
