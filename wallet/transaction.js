@@ -26,6 +26,13 @@ class Transaction {
         };
     }
 
+
+    update({ senderWallet, recipient, amount }) {
+        this.outputMap[recipient] = amount;
+        this.outputMap[senderWallet.publicKey] = this.outputMap[senderWallet.publicKey] - amount;
+        this.input = this.createInput({ senderWallet, outputMap: this.outputMap });
+    }
+
     static validTransaction(transaction) {
 
         const { input: { amount, address, signature }, outputMap } = transaction;
@@ -37,13 +44,14 @@ class Transaction {
             return false;
         }
 
-        if(!verifySignature({publicKey: address, data: outputMap, signature})) {
+        if (!verifySignature({ publicKey: address, data: outputMap, signature })) {
             console.error(`Invalid signature from ${address}`);
             return false;
         }
 
         return true;
     }
+
 }
 
 module.exports = Transaction;
